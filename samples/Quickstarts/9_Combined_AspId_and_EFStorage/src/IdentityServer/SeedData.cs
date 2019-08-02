@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using IdentityModel;
+using IdentityServer.Managers;
+using IdentityServer.Models;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServerAspNetIdentity.Data;
@@ -26,7 +28,61 @@ namespace IdentityServerAspNetIdentity
             provider.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
 
             {
+                //var userRoleStore = provider.GetRequiredService<IUserRoleStore<ApplicationUser>>();
+                var tenantMgr = provider.GetRequiredService<TenantManager>();
+                var roleMgr = provider.GetRequiredService<RoleManager>();
                 var userMgr = provider.GetRequiredService<UserManager<ApplicationUser>>();
+
+
+                var tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
+                if (tenant1 == null)
+                {
+                    var result = tenantMgr.CreateAsync("tenant1").Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+                    tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
+                    Console.WriteLine("tenant1 created");
+                }
+                else
+                {
+                    Console.WriteLine("tenant1 already exists");
+                }
+
+                var tenant2 = tenantMgr.FindByNameAsync("tenant2").Result;
+                if (tenant2 == null)
+                {
+                    var result = tenantMgr.CreateAsync("tenant2").Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+                    tenant2 = tenantMgr.FindByNameAsync("tenant2").Result;
+                    Console.WriteLine("tenant2 created");
+                }
+                else
+                {
+                    Console.WriteLine("tenant2 already exists");
+                }
+
+                var tenantRoleName = "zero.tenantRole1";
+                var tenantAdminRole = roleMgr.FindByNameAsync(tenantRoleName).Result;
+                if (tenantAdminRole == null)
+                {
+                    var result = roleMgr.CreateAsync(new ApplicationRole(tenantRoleName, tenant1.NodeId, tenant1.Id)).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    } 
+                    result = roleMgr.CreateAsync(new ApplicationRole(tenantRoleName, tenant2.NodeId, tenant2.Id)).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+                    Console.WriteLine("tenantAdminRole created");
+                }
+
                 var alice = userMgr.FindByNameAsync("alice").Result;
                 if (alice == null)
                 {
@@ -41,7 +97,6 @@ namespace IdentityServerAspNetIdentity
                     }
 
                     alice = userMgr.FindByNameAsync("alice").Result;
-
                     result = userMgr.AddClaimsAsync(alice, new Claim[]{
                                 new Claim(JwtClaimTypes.Name, "Alice Smith"),
                                 new Claim(JwtClaimTypes.GivenName, "Alice"),
@@ -61,6 +116,8 @@ namespace IdentityServerAspNetIdentity
                 {
                     Console.WriteLine("alice already exists");
                 }
+
+                
 
                 var bob = userMgr.FindByNameAsync("bob").Result;
                 if (bob == null)
