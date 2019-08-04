@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,9 @@ namespace IdentityServer.Models
 
     public class ApplicationRole: IdentityRole
     {
+        [MaxLength(256)]
         public virtual string TenantId { get; set; }
+        [MaxLength(256)]
         public virtual string ScopeId { get; set; }
         public RoleType Type { get; set; }
         public ApplicationRole()
