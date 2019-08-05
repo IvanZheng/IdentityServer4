@@ -170,7 +170,7 @@ namespace IdentityServerAspNetIdentity
                     }
                     context.SaveChanges();
                 }
-
+                
                 if (!context.ApiResources.Any())
                 {
                     foreach (var resource in Config.GetApis())

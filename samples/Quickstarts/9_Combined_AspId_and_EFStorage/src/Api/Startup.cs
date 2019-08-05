@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,13 +16,22 @@ namespace Api
                 .AddAuthorization()
                 .AddJsonFormatters();
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+            //services.AddAuthentication("Bearer")
+            //        .AddJwtBearer("Bearer", options =>
+            //        {
+            //            options.Authority = "http://localhost:5000";
+            //            options.RequireHttpsMetadata = false;
+
+            //            options.Audience = "api1";
+            //        });
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
-
-                    options.Audience = "api1";
+                    options.ApiName = "api1";
+                    options.ApiSecret = "api1Secret2".ToSha256();
                 });
 
             services.AddCors(options =>

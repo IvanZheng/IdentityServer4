@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
@@ -24,6 +25,13 @@ namespace IdentityServerAspNetIdentity
             return new List<ApiResource>
             {
                 new ApiResource("api1", "My API")
+                {
+                    ApiSecrets = new List<Secret>
+                    {
+                        new Secret("api1Secret1".Sha256(), "api1Secret1", DateTime.Now.AddMinutes(1)),
+                        new Secret("api1Secret2".Sha256(), "api1Secret2")
+                    }
+                }
             };
         }
 
