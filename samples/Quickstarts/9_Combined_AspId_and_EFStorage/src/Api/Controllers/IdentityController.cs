@@ -8,12 +8,20 @@ using Microsoft.AspNetCore.Authorization;
 namespace Api.Controllers
 {
     [Route("identity")]
-    [Authorize]
     public class IdentityController : ControllerBase
     {
+        [Authorize("policy1")]
+        [HttpGet]
         public IActionResult Get()
         {
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+
+        [Authorize("policy2")]
+        [HttpPost]
+        public IActionResult Post([FromBody]object data)
+        {
+            return new JsonResult(data);
         }
     }
 }

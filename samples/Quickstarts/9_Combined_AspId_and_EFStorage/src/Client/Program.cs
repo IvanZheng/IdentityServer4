@@ -28,9 +28,8 @@ namespace Client
             {
                 Address = disco.TokenEndpoint,
                 ClientId = "client",
-                ClientSecret = "secret",
-
-                Scope = "api1"
+                ClientSecret = "secret2",
+                Scope = "api2"
             });
             
             if (tokenResponse.IsError)
@@ -46,7 +45,7 @@ namespace Client
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
-            var response = await apiClient.GetAsync("http://localhost:5001/identity");
+            var response = await apiClient.PostAsJsonAsync("http://localhost:5001/identity", new {Name = "test"});
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.StatusCode);
@@ -54,7 +53,7 @@ namespace Client
             else
             {
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(JArray.Parse(content));
+                Console.WriteLine(content);
             }
         }
     }

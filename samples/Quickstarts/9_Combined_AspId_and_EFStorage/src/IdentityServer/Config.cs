@@ -30,6 +30,11 @@ namespace IdentityServerAspNetIdentity
                     {
                         new Secret("api1Secret1".Sha256(), "api1Secret1", DateTime.Now.AddMinutes(1)),
                         new Secret("api1Secret2".Sha256(), "api1Secret2")
+                    },
+                    Scopes = new List<Scope>()
+                    {
+                        new Scope("api1"),
+                        new Scope("api2")
                     }
                 }
             };
@@ -49,11 +54,13 @@ namespace IdentityServerAspNetIdentity
                     // secret for authentication
                     ClientSecrets =
                     {
-                        new Secret("secret".Sha256())
+                        new Secret("secret".Sha256(), "secret1", DateTime.Now.AddMinutes(1)),
+                        new Secret("secret2".Sha256(), "secret2"),
+
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { "api1", "api2" }
                 },
                 // resource owner password grant client
                 new Client

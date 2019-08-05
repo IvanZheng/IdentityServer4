@@ -3,6 +3,7 @@
 
 using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,18 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvcCore()
-                .AddAuthorization()
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy("policy1", builder =>
+                    {
+                        // require scope1
+                        builder.RequireScope("api1");
+                    });
+                    options.AddPolicy("policy2", builder =>
+                    {
+                        builder.RequireScope("api2");
+                    });
+                })
                 .AddJsonFormatters();
 
             //services.AddAuthentication("Bearer")
@@ -31,7 +43,7 @@ namespace Api
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
                     options.ApiName = "api1";
-                    options.ApiSecret = "api1Secret2".ToSha256();
+                    options.ApiSecret = "api1Secret1".ToSha256();
                 });
 
             services.AddCors(options =>
