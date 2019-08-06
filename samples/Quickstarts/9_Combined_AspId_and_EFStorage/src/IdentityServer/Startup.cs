@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer.Managers;
 using IdentityServer.Models;
 using IdentityServerAspNetIdentity.Data;
@@ -12,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Logging;
 
 namespace IdentityServerAspNetIdentity
 {
@@ -28,6 +32,7 @@ namespace IdentityServerAspNetIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = true;
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -82,7 +87,9 @@ namespace IdentityServerAspNetIdentity
             }
             else
             {
-                throw new Exception("need to configure key material");
+                var cert = new X509Certificate2(Path.Combine(Environment.ContentRootPath, "teamcore.pfx"), "Password01!");
+                builder.AddSigningCredential(cert);
+                //throw new Exception("need to configure key material");
             }
 
             services.AddAuthentication()
