@@ -19,11 +19,11 @@ namespace Api
                     options.AddPolicy("policy1", builder =>
                     {
                         // require scope1
-                        builder.RequireScope("api1");
+                        builder.RequireScope("api1", "apiall");
                     });
                     options.AddPolicy("policy2", builder =>
                     {
-                        builder.RequireScope("api2");
+                        builder.RequireScope("api2", "apiall");
                     });
                 })
                 .AddJsonFormatters();

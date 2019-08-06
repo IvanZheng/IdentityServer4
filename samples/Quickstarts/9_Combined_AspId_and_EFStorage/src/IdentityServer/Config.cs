@@ -34,7 +34,8 @@ namespace IdentityServerAspNetIdentity
                     Scopes = new List<Scope>()
                     {
                         new Scope("api1"),
-                        new Scope("api2")
+                        new Scope("api2"),
+                        new Scope("apiall")
                     }
                 }
             };
@@ -60,7 +61,7 @@ namespace IdentityServerAspNetIdentity
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "api1", "api2" }
+                    AllowedScopes = { "api1", "api2", "apiall" }
                 },
                 // resource owner password grant client
                 new Client
