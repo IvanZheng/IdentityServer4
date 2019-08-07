@@ -6,6 +6,8 @@ using System;
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace IdentityServerAspNetIdentity
 {
@@ -24,7 +26,7 @@ namespace IdentityServerAspNetIdentity
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource("api1", "My API", new List<string>(){JwtClaimTypes.Role})
                 {
                     ApiSecrets = new List<Secret>
                     {
