@@ -100,10 +100,9 @@ namespace Api.Authorizations
             var groups = new Dictionary<string, PermissionGroupDefinition>();
             using (var scope = _serviceProvider.CreateScope())
             {
-                var providers = Options
-                                .DefinitionProviders
-                                .Select(p => scope.ServiceProvider.GetRequiredService(p) as IPermissionDefinitionProvider)
-                                .ToList();
+                var providers = Options.DefinitionProviders
+                                       .Select(p => scope.ServiceProvider.GetRequiredService(p) as IPermissionDefinitionProvider)
+                                       .ToList();
 
                 foreach (var provider in providers)
                 {

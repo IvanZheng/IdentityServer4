@@ -7,7 +7,7 @@ namespace Api.Authorizations
 {
     public interface IPermissionDefinitionProvider
     {
-        void Define(Dictionary<string, PermissionGroupDefinition> Groups);
+        void Define(Dictionary<string, PermissionGroupDefinition> groups);
 
     }
 }

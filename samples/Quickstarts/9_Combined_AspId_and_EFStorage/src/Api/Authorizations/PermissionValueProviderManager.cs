@@ -15,10 +15,13 @@ namespace Api.Authorizations
         {
             Options = options.Value;
 
-            _lazyProviders = new Lazy<List<IPermissionValueProvider>>(() => Options
-                                                                            .ValueProviders
-                                                                            .Select(c => serviceProvider.GetRequiredService(c) as IPermissionValueProvider)
-                                                                            .ToList(),
+            _lazyProviders = new Lazy<List<IPermissionValueProvider>>(() =>
+                                                                      {
+                                                                          return Options
+                                                                                 .ValueProviders
+                                                                                 .Select(c => serviceProvider.GetRequiredService(c) as IPermissionValueProvider)
+                                                                                 .ToList();
+                                                                      },
                                                                       true);
         }
 

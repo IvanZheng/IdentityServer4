@@ -8,14 +8,16 @@ namespace Api.Authorizations
 {
     public class PermissionGroupDefinition
     {
+        public string AppId { get; }
         public string Name { get; }
         public Dictionary<string, object> Properties { get; }
         public IReadOnlyList<PermissionDefinition> Permissions => _permissions.ToImmutableList();
         private readonly List<PermissionDefinition> _permissions;
 
 
-        public PermissionGroupDefinition(string name)
+        public PermissionGroupDefinition(string appId, string name)
         {
+            AppId = appId;
             Name = name;
             _permissions = new List<PermissionDefinition>();
             Properties = new Dictionary<string, object>();
@@ -28,9 +30,9 @@ namespace Api.Authorizations
         }
 
 
-        public virtual PermissionDefinition AddPermission(string appId, string name, Dictionary<string, object> properties = null)
+        public virtual PermissionDefinition AddPermission(string name, Dictionary<string, object> properties = null)
         {
-            var permission = new PermissionDefinition(appId, name, properties);
+            var permission = new PermissionDefinition(AppId, name, properties);
 
             _permissions.Add(permission);
 

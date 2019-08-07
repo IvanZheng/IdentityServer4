@@ -21,6 +21,7 @@ namespace Api.Controllers
         }
 
         [Authorize("policy1")]
+        [Authorize(ApiManagementPermissions.Post)]
         [HttpGet]
         public IActionResult Get()
         {

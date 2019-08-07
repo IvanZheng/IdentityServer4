@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using Api.Authorizations;
 using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Api
 {
@@ -28,6 +30,7 @@ namespace Api
                 })
                 .AddJsonFormatters();
 
+            
             //services.AddAuthentication("Bearer")
             //        .AddJwtBearer("Bearer", options =>
             //        {
@@ -45,7 +48,25 @@ namespace Api
                     options.ApiName = "api1";
                     options.ApiSecret = "api1Secret1".ToSha256();
                 });
+            services.Replace(new ServiceDescriptor(typeof(IAuthorizationPolicyProvider),
+                                                   typeof(PermissionAuthorizationPolicyProvider), 
+                                                   ServiceLifetime.Singleton));
+            services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
+            services.AddSingleton<PermissionDefinitionProvider>();
+            services.AddScoped<IPermissionStore, PermissionStore>();
+            services.AddScoped<IPermissionChecker, PermissionChecker>();
+            services.AddScoped<ICurrentPrincipalAccessor, CurrentPrincipalAccessor>();
+            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddScoped<UserPermissionValueProvider>();
+            services.AddScoped<RolePermissionValueProvider>();
+            services.AddScoped<IPermissionValueProviderManager, PermissionValueProviderManager>();
 
+            services.Configure<PermissionOptions>(options =>
+            {
+                options.DefinitionProviders.Add(typeof(PermissionDefinitionProvider));
+                options.ValueProviders.Add(typeof(UserPermissionValueProvider));
+                options.ValueProviders.Add(typeof(RolePermissionValueProvider));
+            });
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"

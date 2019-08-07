@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
 
 namespace Api.Authorizations
 {
@@ -20,7 +21,7 @@ namespace Api.Authorizations
 
         public override async Task<PermissionGrantResult> CheckAsync(PermissionValueCheckContext context)
         {
-            var userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = context.Principal?.FindFirst(JwtClaimTypes.Subject)?.Value;
 
             if (userId == null || !string.IsNullOrWhiteSpace(context.ScopeId))
             {
