@@ -28,11 +28,10 @@ namespace IdentityServerAspNetIdentity
             provider.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
 
             {
-                //var userRoleStore = provider.GetRequiredService<IUserRoleStore<ApplicationUser>>();
                 var tenantMgr = provider.GetRequiredService<TenantManager>();
                 var roleMgr = provider.GetRequiredService<RoleManager>();
                 var userMgr = provider.GetRequiredService<UserManager<ApplicationUser>>();
-
+                //var userRoleStore = provider.GetRequiredService<IUserRoleStore<ApplicationUser>>() as UserRoleStore;
 
                 var tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
                 if (tenant1 == null)
@@ -67,19 +66,29 @@ namespace IdentityServerAspNetIdentity
                 }
 
                 var tenantRoleName = "zero.tenantRole1";
-                var tenantAdminRole = roleMgr.FindByNameAsync(tenantRoleName).Result;
-                if (tenantAdminRole == null)
+
+                var tenantAdminRole1 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant1.NodeId).Result;
+                if (tenantAdminRole1 == null)
                 {
                     var result = roleMgr.CreateAsync(new ApplicationRole(tenantRoleName, tenant1.NodeId, tenant1.Id)).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
                     } 
-                    result = roleMgr.CreateAsync(new ApplicationRole(tenantRoleName, tenant2.NodeId, tenant2.Id)).Result;
+                    tenantAdminRole1 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant1.NodeId).Result;
+                    roleMgr.AddClaimAsync(tenantAdminRole1, new Claim("ScopeId", tenant1.NodeId)).Wait();
+                    Console.WriteLine("tenantAdminRole created");
+                }
+
+                var tenantAdminRole2 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant2.NodeId).Result;
+                if (tenantAdminRole2 == null)
+                {
+                    var result = roleMgr.CreateAsync(new ApplicationRole(tenantRoleName, tenant2.NodeId, tenant2.Id)).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
-                    }
+                    } 
+                    tenantAdminRole2 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant2.NodeId).Result;
                     Console.WriteLine("tenantAdminRole created");
                 }
 
@@ -111,6 +120,14 @@ namespace IdentityServerAspNetIdentity
                         throw new Exception(result.Errors.First().Description);
                     }
                     Console.WriteLine("alice created");
+
+
+                    result = roleMgr.AddToRoleAsync(alice, tenantAdminRole1).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+                    Console.WriteLine("user role created");
                 }
                 else
                 {

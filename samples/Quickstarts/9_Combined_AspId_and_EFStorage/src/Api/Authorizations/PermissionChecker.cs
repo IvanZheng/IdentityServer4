@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+namespace Api.Authorizations
+{
+    public class PermissionChecker : IPermissionChecker
+    {
+        protected IPermissionDefinitionManager PermissionDefinitionManager { get; }
+        protected ICurrentPrincipalAccessor PrincipalAccessor { get; }
+        protected IPermissionValueProviderManager PermissionValueProviderManager { get; }
+
+        public PermissionChecker(
+            ICurrentPrincipalAccessor principalAccessor,
+            IPermissionDefinitionManager permissionDefinitionManager, 
+            IPermissionValueProviderManager permissionValueProviderManager)
+        {
+            PrincipalAccessor = principalAccessor;
+            PermissionDefinitionManager = permissionDefinitionManager;
+            PermissionValueProviderManager = permissionValueProviderManager;
+        }
+
+        public virtual Task<bool> IsGrantedAsync(string name)
+        {
+            return IsGrantedAsync(PrincipalAccessor.Principal, name);
+        }
+
+        public virtual async Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+            }
+
+            var permission = PermissionDefinitionManager.Get(name);
+
+
+            var isGranted = false;
+            var context = new PermissionValueCheckContext(permission, claimsPrincipal);
+            foreach (var provider in PermissionValueProviderManager.ValueProviders)
+            {
+                var result = await provider.CheckAsync(context);
+
+                if (result == PermissionGrantResult.Granted)
+                {
+                    isGranted = true;
+                }
+                else if (result == PermissionGrantResult.Prohibited)
+                {
+                    return false;
+                }
+            }
+
+            return isGranted;
+        }
+    }
+}
