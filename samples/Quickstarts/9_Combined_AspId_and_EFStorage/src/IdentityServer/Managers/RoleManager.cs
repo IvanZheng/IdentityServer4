@@ -64,6 +64,17 @@ namespace IdentityServer.Managers
             return await AddToRoleAsync(user, applicationRole, cancellationToken).ConfigureAwait(false);
         }
 
+        public virtual async Task<ApplicationRole[]> GetRolesByUserAsync(ApplicationUser user)
+        {
+            var context = Context ??
+                          throw new ArgumentNullException($"store");
+            var query = from userRole in context.UserRoles.Where(ur => ur.UserId == user.Id)
+                        join role in context.Roles on userRole.RoleId equals role.Id
+                        select role;
+            return await query.ToArrayAsync();
+        }
+
+
         public virtual async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, ApplicationRole role,  CancellationToken cancellationToken = default)
         {
             var context = Context ??

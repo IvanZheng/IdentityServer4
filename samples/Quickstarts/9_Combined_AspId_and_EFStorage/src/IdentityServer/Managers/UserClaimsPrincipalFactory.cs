@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using IdentityModel;
 using IdentityServer.Models;
 using IdentityServerAspNetIdentity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -11,40 +9,54 @@ using Microsoft.Extensions.Options;
 
 namespace IdentityServer.Managers
 {
-    public class UserClaimsPrincipalFactory: UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
+    public class UserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
     {
-        public UserClaimsPrincipalFactory( 
-            UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager, 
-            IOptions<IdentityOptions> optionsAccessor) 
+        private readonly RoleManager _roleManager;
+
+        public UserClaimsPrincipalFactory(UserManager<ApplicationUser> userManager,
+                                          RoleManager roleManager,
+                                          IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, roleManager, optionsAccessor)
         {
+            _roleManager = roleManager;
         }
- 
-        //protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
-        //{
-        //    string userId = await this.UserManager.GetUserIdAsync(user);
-        //    string userNameAsync = await this.UserManager.GetUserNameAsync(user);
-        //    ClaimsIdentity id = new ClaimsIdentity("Identity.Application", this.Options.ClaimsIdentity.UserNameClaimType, this.Options.ClaimsIdentity.RoleClaimType);
-        //    id.AddClaim(new Claim(this.Options.ClaimsIdentity.UserIdClaimType, userId));
-        //    id.AddClaim(new Claim(this.Options.ClaimsIdentity.UserNameClaimType, userNameAsync));
-        //    ClaimsIdentity claimsIdentity;
-        //    if (this.UserManager.SupportsUserSecurityStamp)
-        //    {
-        //        claimsIdentity = id;
-        //        string type = this.Options.ClaimsIdentity.SecurityStampClaimType;
-        //        claimsIdentity.AddClaim(new Claim(type, await this.UserManager.GetSecurityStampAsync(user)));
-        //        claimsIdentity = (ClaimsIdentity) null;
-        //        type = (string) null;
-        //    }
-        //    if (this.UserManager.SupportsUserClaim)
-        //    {
-        //        claimsIdentity = id;
-        //        claimsIdentity.AddClaims((IEnumerable<Claim>) await this.UserManager.GetClaimsAsync(user));
-        //        claimsIdentity = (ClaimsIdentity) null;
-        //    }
-        //    return id;
-        //}
+
+
+        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
+        {
+            string userId = await UserManager.GetUserIdAsync(user);
+            string userNameAsync = await UserManager.GetUserNameAsync(user);
+            ClaimsIdentity id = new ClaimsIdentity("Identity.Application",
+                                                   Options.ClaimsIdentity.UserNameClaimType,
+                                                   Options.ClaimsIdentity.RoleClaimType);
+            id.AddClaim(new Claim(Options.ClaimsIdentity.UserIdClaimType, userId));
+            id.AddClaim(new Claim(Options.ClaimsIdentity.UserNameClaimType, userNameAsync));
+            ClaimsIdentity claimsIdentity;
+            if (UserManager.SupportsUserSecurityStamp)
+            {
+                claimsIdentity = id;
+                string type = Options.ClaimsIdentity.SecurityStampClaimType;
+                claimsIdentity.AddClaim(new Claim(type, await UserManager.GetSecurityStampAsync(user)));
+            }
+
+            if (UserManager.SupportsUserClaim)
+            {
+                claimsIdentity = id;
+                claimsIdentity.AddClaims(await UserManager.GetClaimsAsync(user));
+            }
+
+            if (UserManager.SupportsUserRole)
+            {
+                foreach (var role in await _roleManager.GetRolesByUserAsync(user))
+                {
+                    var roleClaim = new Claim(Options.ClaimsIdentity.RoleClaimType, role.Name);
+                    roleClaim.Properties.Add("ScopeId", role.ScopeId);
+                    roleClaim.Properties.Add("TenantId", role.TenantId);
+                    id.AddClaim(roleClaim);
+                }
+            }
+            return id;
+        }
 
         public override async Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
         {
@@ -55,12 +67,12 @@ namespace IdentityServer.Managers
             //    new Claim(JwtClaimTypes.Role, "dataEventRecords"),
             //    new Claim(JwtClaimTypes.Role, "dataEventRecords.user")
             //};
- 
+
             //if (user.DataEventRecordsRole == "dataEventRecords.admin")
             //{
             //    claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords.admin"));
             //}
- 
+
             //if (user.IsAdmin)
             //{
             //    claims.Add(new Claim(JwtClaimTypes.Role, "admin"));
@@ -69,7 +81,7 @@ namespace IdentityServer.Managers
             //{
             //    claims.Add(new Claim(JwtClaimTypes.Role, "user"));
             //}
- 
+
             //identity.AddClaims(claims);
             return principal;
         }
