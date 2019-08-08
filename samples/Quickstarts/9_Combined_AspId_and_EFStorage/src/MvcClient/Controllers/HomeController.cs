@@ -39,9 +39,14 @@ namespace MvcClient.Controllers
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var content = await client.GetStringAsync("http://localhost:5001/identity");
+            
+            //var content = await client.GetStringAsync("http://localhost:5001/identity?scopeId=aaa");
 
-            ViewBag.Json = JArray.Parse(content).ToString();
+            var response = await client.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "aaa", Name = "test"})
+                                      .ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
+
+            ViewBag.Json = content;
             return View("json");
         }
     }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using Api.Authorizations;
 using Api.Security;
 using Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +22,14 @@ namespace Api.Controllers
         }
 
         [Authorize("policy1")]
-        [Authorize(ApiManagementPermissions.Post)]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string scopeId)
         {
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
         }
 
         [Authorize("policy2")]
-        //[Authorize(ApiManagementPermissions.Post)]
+        [Authorize(ApiManagementPermissions.Post + ":ScopeId")]
         [HttpPost]
         public IActionResult Post([FromBody]object data)
         {

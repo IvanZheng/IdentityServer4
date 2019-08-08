@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Logging;
+using MvcClient.Model;
+using Newtonsoft.Json;
 
 namespace MvcClient
 {
@@ -32,9 +35,10 @@ namespace MvcClient
                 {
                     options.Events.OnUserInformationReceived = context =>
                     {
-
                         return Task.CompletedTask;
                     };
+
+
                     options.SignInScheme = "Cookies";
 
                     options.Authority = "http://localhost:5000";
@@ -51,8 +55,8 @@ namespace MvcClient
                     options.Scope.Add("offline_access");
                     options.Scope.Add(JwtClaimTypes.Role);
                     //options.ClaimActions.MapAll();
-                    options.ClaimActions.MapAllExcept("iss", "nbf", "exp", "aud", "nonce", "iat", "c_hash", "auth_time", "idp", "amr");
-                    //options.ClaimActions.Add(new JsonKeyClaimAction(JwtClaimTypes.Role, null, JwtClaimTypes.Role));
+                    options.ClaimActions.MapAllExcept("role", "iss", "nbf", "exp", "aud", "nonce", "iat", "c_hash", "auth_time", "idp", "amr");
+                    options.ClaimActions.Add(new JsonKeyClaimAction(JwtClaimTypes.Role, null, JwtClaimTypes.Role));
                   
                     //options.ClaimActions.MapJsonKey("website", "website");
                     //options.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role, JwtClaimTypes.Role);

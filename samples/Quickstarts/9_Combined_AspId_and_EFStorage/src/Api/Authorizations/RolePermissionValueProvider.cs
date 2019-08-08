@@ -22,11 +22,28 @@ namespace Api.Authorizations
 
         public override async Task<PermissionGrantResult> CheckAsync(PermissionValueCheckContext context)
         {
-            var roles = context.Principal?.FindAll(JwtClaimTypes.Role).ToArray();
+            var roles = context.Principal?.FindAll(JwtClaimTypes.Role)
+                               .Select(c =>
+                               {
+                                   var role = new Role {Key = c.Value};
+                                   var values = c.Value.Split(':');
+                                   if (values.Length > 1)
+                                   {
+                                       role.Name = values[0];
+                                       role.ScopeId = values[1];
+                                   }
+                                   else
+                                   {
+                                       role.Name = values[0];
+                                   }
+
+                                   return role;
+                               })
+                               .ToArray();
             if (!string.IsNullOrWhiteSpace(context.ScopeId))
             {
-                roles = roles?.Where(r => r.Subject.HasClaim(c => c.Type == nameof(context.ScopeId) && c.Value == context.ScopeId))
-                             .ToArray();
+                roles = roles?.Where(r => r.ScopeId == context.ScopeId)
+                              .ToArray();
             }
 
             if (roles == null || !roles.Any())
@@ -34,9 +51,9 @@ namespace Api.Authorizations
                 return PermissionGrantResult.Undefined;
             }
 
-            foreach (var role in roles.Select(r => r.Value))
+            foreach (var roleKey in roles.Select(r => r.Key))
             {
-                if (await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, role))
+                if (await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, roleKey))
                 {
                     return PermissionGrantResult.Granted;
                 }

@@ -28,13 +28,22 @@ namespace Api.Authorizations
                 return policy;
             }
 
+            var nameValues = policyName.Split(':');
+            var permissionName = policyName;
+            string scopeIdParameter = null;
+            if (nameValues.Length > 1)
+            {
+                permissionName = nameValues[0];
+                scopeIdParameter = nameValues[1];
+            }
+
             return _authorizationPolicies.GetOrAdd(policyName, key =>
             {
-                var permission = _permissionDefinitionManager.GetOrNull(policyName);
+                var permission = _permissionDefinitionManager.GetOrNull(permissionName);
                 if (permission != null)
                 {
                     var policyBuilder = new AuthorizationPolicyBuilder(Array.Empty<string>());
-                    policyBuilder.Requirements.Add(new PermissionRequirement(policyName));
+                    policyBuilder.Requirements.Add(new PermissionRequirement(permissionName, scopeIdParameter));
                     return policyBuilder.Build();
                 }
 

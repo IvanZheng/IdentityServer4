@@ -87,7 +87,6 @@ namespace IdentityServerAspNetIdentity
                         throw new Exception(result.Errors.First().Description);
                     } 
                     tenantAdminRole1 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant1.NodeId).Result;
-                    roleMgr.AddClaimAsync(tenantAdminRole1, new Claim("ScopeId", tenant1.NodeId)).Wait();
                     Console.WriteLine("tenantAdminRole created");
                 }
 

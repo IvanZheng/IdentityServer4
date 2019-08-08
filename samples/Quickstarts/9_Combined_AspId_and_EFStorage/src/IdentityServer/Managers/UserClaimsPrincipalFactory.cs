@@ -49,9 +49,12 @@ namespace IdentityServer.Managers
             {
                 foreach (var role in await _roleManager.GetRolesByUserAsync(user))
                 {
-                    var roleClaim = new Claim(Options.ClaimsIdentity.RoleClaimType, role.Name);
-                    roleClaim.Properties.Add("ScopeId", role.ScopeId);
-                    roleClaim.Properties.Add("TenantId", role.TenantId);
+                    var roleClaimValue = role.Name;
+                    if (!string.IsNullOrWhiteSpace(role.ScopeId))
+                    {
+                        roleClaimValue += $":{role.ScopeId}";
+                    }
+                    var roleClaim = new Claim(Options.ClaimsIdentity.RoleClaimType, roleClaimValue);
                     id.AddClaim(roleClaim);
                 }
             }
