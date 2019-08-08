@@ -178,6 +178,11 @@ namespace IdentityServerAspNetIdentity
                         throw new Exception(result.Errors.First().Description);
                     }
                     Console.WriteLine("bob created");
+                    result = roleMgr.AddToRoleAsync(bob, tenantAdminRole2).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
                 }
                 else
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 
 namespace Api.Authorizations
@@ -21,7 +22,7 @@ namespace Api.Authorizations
 
         public override async Task<PermissionGrantResult> CheckAsync(PermissionValueCheckContext context)
         {
-            var roles = context.Principal?.FindAll(ClaimTypes.Role).ToArray();
+            var roles = context.Principal?.FindAll(JwtClaimTypes.Role).ToArray();
             if (!string.IsNullOrWhiteSpace(context.ScopeId))
             {
                 roles = roles?.Where(r => r.Subject.HasClaim(c => c.Type == nameof(context.ScopeId) && c.Value == context.ScopeId))

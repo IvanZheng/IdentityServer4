@@ -44,7 +44,7 @@ namespace IdentityServerAspNetIdentity
                     .AddRoleManager<RoleManager>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
-
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory>();
             services.Replace(new ServiceDescriptor(typeof(IRoleValidator<ApplicationRole>), typeof(RoleValidator), ServiceLifetime.Scoped));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
