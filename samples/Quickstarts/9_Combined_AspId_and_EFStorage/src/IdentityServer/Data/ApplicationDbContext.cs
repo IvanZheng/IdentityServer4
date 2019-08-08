@@ -27,6 +27,7 @@ namespace IdentityServerAspNetIdentity.Data
 
             applicationRoleBuilder.HasIndex(r => new {r.NormalizedName, r.ScopeId})
                                   .HasName("RoleNameIndex")
+                                  .HasFilter("([NormalizedName] IS NOT NULL)")
                                   .IsUnique();
 
             builder.Entity<ApplicationPermissionGrant>()

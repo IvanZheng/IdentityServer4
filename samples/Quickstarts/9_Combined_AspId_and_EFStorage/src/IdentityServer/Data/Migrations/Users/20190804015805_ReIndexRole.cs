@@ -31,7 +31,7 @@ namespace IdentityServer.Migrations
                 table: "AspNetRoles",
                 columns: new[] { "NormalizedName", "ScopeId" },
                 unique: true,
-                filter: "[NormalizedName] IS NOT NULL AND [ScopeId] IS NOT NULL");
+                filter: "[NormalizedName] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

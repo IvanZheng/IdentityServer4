@@ -65,8 +65,19 @@ namespace IdentityServerAspNetIdentity
                     Console.WriteLine("tenant2 already exists");
                 }
 
-                var tenantRoleName = "zero.tenantRole1";
+                var adminRoleName = "zero.Admin";
+                var adminRole = roleMgr.FindByNameAsync(adminRoleName).Result;
+                if (adminRole == null)
+                {
+                    var result = roleMgr.CreateAsync(new ApplicationRole(adminRoleName)).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    } 
+                    adminRole = roleMgr.FindByNameAsync(adminRoleName).Result;
+                }
 
+                var tenantRoleName = "zero.tenantRole1";
                 var tenantAdminRole1 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant1.NodeId).Result;
                 if (tenantAdminRole1 == null)
                 {
@@ -123,6 +134,12 @@ namespace IdentityServerAspNetIdentity
 
 
                     result = roleMgr.AddToRoleAsync(alice, tenantAdminRole1).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+
+                    result = roleMgr.AddToRoleAsync(alice, adminRole).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
