@@ -22,28 +22,21 @@ namespace Api.Authorizations
 
         public override async Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
-            var policy = await base.GetPolicyAsync(policyName);
+            var permissionName = policyName;
+            var policy = await base.GetPolicyAsync(permissionName);
             if (policy != null)
             {
                 return policy;
             }
 
-            var nameValues = policyName.Split(':');
-            var permissionName = policyName;
-            string scopeIdParameter = null;
-            if (nameValues.Length > 1)
-            {
-                permissionName = nameValues[0];
-                scopeIdParameter = nameValues[1];
-            }
 
-            return _authorizationPolicies.GetOrAdd(policyName, key =>
+            return _authorizationPolicies.GetOrAdd(permissionName, key =>
             {
                 var permission = _permissionDefinitionManager.GetOrNull(permissionName);
                 if (permission != null)
                 {
                     var policyBuilder = new AuthorizationPolicyBuilder(Array.Empty<string>());
-                    policyBuilder.Requirements.Add(new PermissionRequirement(permissionName, scopeIdParameter));
+                    policyBuilder.Requirements.Add(new PermissionRequirement(permissionName));
                     return policyBuilder.Build();
                 }
 

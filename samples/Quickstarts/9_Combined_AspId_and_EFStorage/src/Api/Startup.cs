@@ -57,6 +57,7 @@ namespace Api
             services.AddScoped<IPermissionChecker, PermissionChecker>();
             services.AddScoped<ICurrentPrincipalAccessor, CurrentPrincipalAccessor>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, PermissionScopeRequirementHandler>();
             services.AddScoped<UserPermissionValueProvider>();
             services.AddScoped<RolePermissionValueProvider>();
             services.AddScoped<IPermissionValueProviderManager, PermissionValueProviderManager>();

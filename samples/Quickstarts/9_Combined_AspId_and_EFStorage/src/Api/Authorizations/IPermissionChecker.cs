@@ -10,6 +10,6 @@ namespace Api.Authorizations
     {
         Task<bool> IsGrantedAsync(string name);
 
-        Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, string name);
+        Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, string name, string scope = null);
     }
 }

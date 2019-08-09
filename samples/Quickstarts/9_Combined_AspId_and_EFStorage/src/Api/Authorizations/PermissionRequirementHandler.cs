@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 
 namespace Api.Authorizations
 {
@@ -21,11 +22,27 @@ namespace Api.Authorizations
             AuthorizationHandlerContext context,
             PermissionRequirement requirement)
         {
-            if (context.Resource is AuthorizationFilterContext authorizationFilterContext)
-            {
-               // authorizationFilterContext.Filters.Cast<AuthorizeFilter>().Select(f => f.AuthorizeData)
-            }
             if (await _permissionChecker.IsGrantedAsync(context.User, requirement.PermissionName))
+            {
+                context.Succeed(requirement);
+            }
+        }
+    }
+
+
+    public class PermissionScopeRequirementHandler : AuthorizationHandler<PermissionScopeRequirement, string>
+    {
+        private readonly IPermissionChecker _permissionChecker;
+
+        public PermissionScopeRequirementHandler(IPermissionChecker permissionChecker)
+        {
+            _permissionChecker = permissionChecker;
+        }
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+                                                             PermissionScopeRequirement requirement, 
+                                                             string scope)
+        {
+            if (await _permissionChecker.IsGrantedAsync(context.User, requirement.PermissionName, scope))
             {
                 context.Succeed(requirement);
             }

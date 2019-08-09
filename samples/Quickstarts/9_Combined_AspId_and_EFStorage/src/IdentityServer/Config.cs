@@ -85,7 +85,9 @@ namespace IdentityServerAspNetIdentity
                         IdentityServerConstants.StandardScopes.OpenId, 
                         IdentityServerConstants.StandardScopes.Profile,
                         JwtClaimTypes.Role,
-                        "api1"},
+                        "api1",
+                        "api2"
+                    },
                     AllowOfflineAccess = true
                 },
                 // JavaScript Client

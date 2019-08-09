@@ -6,19 +6,38 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Authorizations
 {
-    public class PermissionRequirement : IAuthorizationRequirement
+    public interface IPermissionRequirement:IAuthorizationRequirement
+    {
+        string PermissionName { get; }
+    }
+
+    public class PermissionRequirement : IPermissionRequirement
     {
         public string PermissionName { get; }
-        public string ScopeIdParameter { get; set; }
 
-        public PermissionRequirement(string permissionName, string scopeIdParameter = null)
+        public PermissionRequirement(string permissionName)
         {
             if (string.IsNullOrWhiteSpace(permissionName))
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(permissionName));
             }
             PermissionName = permissionName;
-            ScopeIdParameter = scopeIdParameter;
         }
     }
+
+  
+    public class PermissionScopeRequirement : IPermissionRequirement
+    {
+        public string PermissionName { get; }
+
+        public PermissionScopeRequirement(string permissionName)
+        {
+            if (string.IsNullOrWhiteSpace(permissionName))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(permissionName));
+            }
+            PermissionName = permissionName;
+        }
+    }
+
 }

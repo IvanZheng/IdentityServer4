@@ -26,8 +26,8 @@ namespace Api.Authorizations
         {
             return IsGrantedAsync(PrincipalAccessor.Principal, name);
         }
-
-        public virtual async Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, string name)
+     
+        public async Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, string name, string scope = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -35,10 +35,8 @@ namespace Api.Authorizations
             }
 
             var permission = PermissionDefinitionManager.Get(name);
-
-
             var isGranted = false;
-            var context = new PermissionValueCheckContext(permission, claimsPrincipal);
+            var context = new PermissionValueCheckContext(permission, claimsPrincipal, scope);
             foreach (var provider in PermissionValueProviderManager.ValueProviders)
             {
                 var result = await provider.CheckAsync(context);

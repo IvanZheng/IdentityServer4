@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Api.Authorizations;
 using Api.Security;
 using Api.Services;
@@ -15,10 +16,12 @@ namespace Api.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IAuthorizationService _authorizationService;
 
-        public IdentityController(IServiceProvider serviceProvider)
+        public IdentityController(IServiceProvider serviceProvider, IAuthorizationService authorizationService)
         {
             _serviceProvider = serviceProvider;
+            _authorizationService = authorizationService;
         }
 
         [Authorize("policy1")]
@@ -29,10 +32,11 @@ namespace Api.Controllers
         }
 
         [Authorize("policy2")]
-        [Authorize(ApiManagementPermissions.Post + ":ScopeId")]
+        //[Authorize(ApiManagementPermissions.Post)]
         [HttpPost]
-        public IActionResult Post([FromBody]object data)
+        public async Task<IActionResult> Post([FromBody]dynamic data)
         {
+            var result = await _authorizationService.AuthorizeAsync(User, (string)data.ScopeId, new PermissionScopeRequirement(ApiManagementPermissions.Post));
             return new JsonResult(data);
         }
     }
