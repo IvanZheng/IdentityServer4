@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Api.Authorizations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class PermissionValueProviderManager : IPermissionValueProviderManager
     {

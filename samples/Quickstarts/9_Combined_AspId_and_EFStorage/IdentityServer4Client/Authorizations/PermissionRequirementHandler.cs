@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Api.Authorizations;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class PermissionRequirementHandler : AuthorizationHandler<PermissionRequirement>
     {

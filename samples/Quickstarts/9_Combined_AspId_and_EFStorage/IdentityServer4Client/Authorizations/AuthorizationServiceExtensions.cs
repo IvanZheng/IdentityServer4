@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Api.Authorizations;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public static class AuthorizationServiceExtensions
     {

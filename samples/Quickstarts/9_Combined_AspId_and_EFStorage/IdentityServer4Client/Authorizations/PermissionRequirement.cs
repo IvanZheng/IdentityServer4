@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public interface IPermissionRequirement:IAuthorizationRequirement
     {

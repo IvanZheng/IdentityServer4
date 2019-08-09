@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using IdentityModel;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class PermissionValueCheckContext
     {

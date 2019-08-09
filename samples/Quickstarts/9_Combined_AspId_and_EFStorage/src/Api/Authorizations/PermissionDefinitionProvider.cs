@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Security;
+using IdentityServer4Client.Authorizations;
 
 namespace Api.Authorizations
 {

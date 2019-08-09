@@ -1,22 +1,19 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Authorizations;
 using Api.Security;
-using Api.Services;
-using Microsoft.AspNetCore.Mvc;
+using IdentityServer4Client.Authorizations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     [Route("identity")]
     public class IdentityController : ControllerBase
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IServiceProvider _serviceProvider;
 
         public IdentityController(IServiceProvider serviceProvider, IAuthorizationService authorizationService)
         {
@@ -28,18 +25,30 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Get(string scopeId)
         {
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+            return new JsonResult(from c in User.Claims select new {c.Type, c.Value});
         }
 
         [Authorize("policy2")]
         //[Authorize(ApiManagementPermissions.Post)]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]dynamic data)
+        public async Task<IActionResult> Post([FromBody] dynamic data)
         {
             var result = await _authorizationService.AuthorizePermissionAsync(User,
-                                                                    (string)data.ScopeId, 
-                                                                    ApiManagementPermissions.Post);
-            return new JsonResult(data);
+                                                                              (string)data.ScopeId,
+                                                                              ApiManagementPermissions.Post);
+            if (result.Succeeded)
+            {
+                return new JsonResult(data);
+            }
+            else if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+
+            }
         }
     }
 }

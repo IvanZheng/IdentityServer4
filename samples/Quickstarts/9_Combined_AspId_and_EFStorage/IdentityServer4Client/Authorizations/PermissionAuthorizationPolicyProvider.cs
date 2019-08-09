@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Api.Authorizations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class PermissionAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider, IPermissionAuthorizationPolicyProvider
     {

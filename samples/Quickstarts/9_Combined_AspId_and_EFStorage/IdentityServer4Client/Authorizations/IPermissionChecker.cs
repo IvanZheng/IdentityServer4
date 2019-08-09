@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public interface IPermissionChecker
     {

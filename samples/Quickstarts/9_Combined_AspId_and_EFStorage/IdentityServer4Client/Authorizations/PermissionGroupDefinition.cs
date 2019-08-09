@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class PermissionGroupDefinition
     {
-        public string AppId { get; }
-        public string Name { get; }
-        public Dictionary<string, object> Properties { get; }
-        public IReadOnlyList<PermissionDefinition> Permissions => _permissions.ToImmutableList();
         private readonly List<PermissionDefinition> _permissions;
 
 
@@ -22,6 +15,11 @@ namespace Api.Authorizations
             _permissions = new List<PermissionDefinition>();
             Properties = new Dictionary<string, object>();
         }
+
+        public string AppId { get; }
+        public string Name { get; }
+        public Dictionary<string, object> Properties { get; }
+        public IReadOnlyList<PermissionDefinition> Permissions => _permissions.ToImmutableList();
 
         public object this[string name]
         {

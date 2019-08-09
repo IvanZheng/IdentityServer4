@@ -4,6 +4,8 @@
 using Api.Authorizations;
 using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
+using IdentityServer4Client;
+using IdentityServer4Client.Authorizations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +55,7 @@ namespace Api
                                                    ServiceLifetime.Singleton));
             services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
             services.AddSingleton<PermissionDefinitionProvider>();
-            services.AddScoped<IPermissionStore, PermissionStore>();
+            services.AddScoped<IPermissionStore, RemotePermissionStore>();
             services.AddScoped<IPermissionChecker, PermissionChecker>();
             services.AddScoped<ICurrentPrincipalAccessor, CurrentPrincipalAccessor>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();

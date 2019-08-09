@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using IdentityModel;
-using Microsoft.AspNetCore.Identity;
 
-namespace Api.Authorizations
+namespace IdentityServer4Client.Authorizations
 {
     public class RolePermissionValueProvider : PermissionValueProvider
     {
@@ -23,22 +19,8 @@ namespace Api.Authorizations
         public override async Task<PermissionGrantResult> CheckAsync(PermissionValueCheckContext context)
         {
             var roles = context.Principal?.FindAll(JwtClaimTypes.Role)
-                               .Select(c =>
-                               {
-                                   var role = new Role {Key = c.Value};
-                                   var values = c.Value.Split(':');
-                                   if (values.Length > 1)
-                                   {
-                                       role.Name = values[0];
-                                       role.ScopeId = values[1];
-                                   }
-                                   else
-                                   {
-                                       role.Name = values[0];
-                                   }
-
-                                   return role;
-                               })
+                               .Where(c => !string.IsNullOrWhiteSpace(c.Value))
+                               .Select(c => new Role(c.Value))
                                .ToArray();
             if (!string.IsNullOrWhiteSpace(context.ScopeId))
             {
