@@ -36,7 +36,9 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]dynamic data)
         {
-            var result = await _authorizationService.AuthorizeAsync(User, (string)data.ScopeId, new PermissionScopeRequirement(ApiManagementPermissions.Post));
+            var result = await _authorizationService.AuthorizePermissionAsync(User,
+                                                                    (string)data.ScopeId, 
+                                                                    ApiManagementPermissions.Post);
             return new JsonResult(data);
         }
     }

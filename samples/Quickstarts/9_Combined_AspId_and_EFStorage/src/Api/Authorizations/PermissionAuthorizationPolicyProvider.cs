@@ -29,7 +29,6 @@ namespace Api.Authorizations
                 return policy;
             }
 
-
             return _authorizationPolicies.GetOrAdd(permissionName, key =>
             {
                 var permission = _permissionDefinitionManager.GetOrNull(permissionName);
