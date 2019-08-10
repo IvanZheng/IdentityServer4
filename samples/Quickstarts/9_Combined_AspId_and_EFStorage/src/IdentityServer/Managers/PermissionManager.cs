@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer.Models;
 using IdentityServerAspNetIdentity.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Managers
@@ -24,5 +26,22 @@ namespace IdentityServer.Managers
                                                               pg.ProviderType == providerType &&
                                                               pg.ProviderKey == providerKey);
         }
+
+        public async Task<IdentityResult> GrantAsync(string name,
+                                         string providerType,
+                                         string providerKey)
+        {
+            if (!await _dbContext.PermissionGrants
+                                .AnyAsync(pg => pg.Name == name && 
+                                                              pg.ProviderType == providerType &&
+                                                              pg.ProviderKey == providerKey)
+                                .ConfigureAwait(false))
+            {
+                _dbContext.PermissionGrants.Add(new ApplicationPermissionGrant(name, providerKey, providerType));
+                await _dbContext.SaveChangesAsync();
+            }
+            return IdentityResult.Success;
+        }
+
     }
 }
