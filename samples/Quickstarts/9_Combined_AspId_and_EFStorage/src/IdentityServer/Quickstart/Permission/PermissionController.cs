@@ -26,11 +26,13 @@ namespace IdentityServer.Quickstart.Permission
         [HttpGet]
         public Task<bool> IsGrantedAsync(string name,
                                          string providerType,
-                                         string providerKey)
+                                         string providerKey,
+                                         string tenantId)
         {
             return _permissionManager.IsGrantedAsync(name,
                                                      providerType,
-                                                     providerKey);
+                                                     providerKey,
+                                                     tenantId);
         }
     }
 }
