@@ -35,8 +35,7 @@ namespace IdentityServerAspNetIdentity
                     {
                         new Scope("api1"),
                         new Scope("api2"), 
-                        new Scope("apiall"), 
-                        new Scope(IdentityServerConstants.LocalApi.ScopeName)
+                        new Scope("apiall")
                     }
                 }
             };
