@@ -48,7 +48,7 @@ namespace ResourceOwnerClient
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
-            var response = await apiClient.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "ea70dad0-218b-4a20-8b23-a1da29ee2d1a", Name = "test"});
+            var response = await apiClient.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "4dde5ffd-ff34-481c-ac78-944451a406d3", Name = "test"});
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.StatusCode);

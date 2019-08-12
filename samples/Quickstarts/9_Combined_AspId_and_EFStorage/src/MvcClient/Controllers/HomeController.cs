@@ -42,8 +42,14 @@ namespace MvcClient.Controllers
             
             //var content = await client.GetStringAsync("http://localhost:5001/identity?scopeId=aaa");
 
-            var response = await client.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "ea70dad0-218b-4a20-8b23-a1da29ee2d1a", Name = "test"})
+            var response = await client.PostAsJsonAsync("http://localhost:5001/identity", 
+                                                        new {ScopeId = "4dde5ffd-ff34-481c-ac78-944451a406d3", Name = "test"})
                                       .ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Json = response.ReasonPhrase;
+                return View("json");
+            }
             var content = await response.Content.ReadAsStringAsync();
 
             ViewBag.Json = content;
