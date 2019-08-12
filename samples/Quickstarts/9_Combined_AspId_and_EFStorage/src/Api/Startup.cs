@@ -27,7 +27,7 @@ namespace Api
                     });
                     options.AddPolicy("policy2", builder =>
                     {
-                        builder.RequireScope("api2", "apiall");
+                        builder.RequireScope("api1", "api2", "apiall");
                     });
                 })
                 .AddJsonFormatters();

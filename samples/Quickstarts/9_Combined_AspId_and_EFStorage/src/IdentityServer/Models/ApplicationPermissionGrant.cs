@@ -22,6 +22,8 @@ namespace IdentityServer.Models
         [MaxLength(128)]
         public string TenantId { get; set; }
 
+        [MaxLength(128)]
+        public string ScopeId { get; set; }
         /// <summary>
         /// 被授权对象
         /// </summary>
@@ -39,12 +41,13 @@ namespace IdentityServer.Models
 
         }
 
-        public ApplicationPermissionGrant(string name, string providerKey, string providerType, string tenantId = null)
+        public ApplicationPermissionGrant(string name, string providerKey, string providerType, string scopeId, string tenantId = null)
         {
             Id = Guid.NewGuid().ToString();
             Name = name;
             ProviderKey = providerKey;
             ProviderType = providerType;
+            ScopeId = scopeId;
             TenantId = tenantId;
         }
 

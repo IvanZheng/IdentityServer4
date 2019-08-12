@@ -31,7 +31,7 @@ namespace IdentityServerAspNetIdentity.Data
                                   .IsUnique();
 
             builder.Entity<ApplicationPermissionGrant>()
-                   .HasIndex(g => new {g.Name, g.ProviderType, g.ProviderKey})
+                   .HasIndex(g => new {g.Name, g.ProviderType, g.ProviderKey, g.ScopeId, g.TenantId})
                    .HasName("IX_ApplicationPermissionGrant_Name_ProviderType_ProviderKey");
         }
     }

@@ -145,7 +145,8 @@ namespace IdentityServerAspNetIdentity
 
                 permissionManager.GrantAsync("Api.ApiManagementPermissions.Post",
                                              "Role",
-                                             $"{tenantAdminRole1.Name}:{tenant1.NodeId}",
+                                             $"{tenantAdminRole1.Name}",
+                                             tenant1.NodeId,
                                              null)
                                  .Wait();
 

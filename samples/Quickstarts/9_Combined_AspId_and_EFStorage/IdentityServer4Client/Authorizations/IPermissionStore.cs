@@ -7,6 +7,7 @@ namespace IdentityServer4Client.Authorizations
         Task<bool> IsGrantedAsync(string name,
                                   string providerType,
                                   string providerKey,
+                                  string scopeId,
                                   string tenantId);
     }
 }

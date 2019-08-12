@@ -19,12 +19,16 @@ namespace IdentityServer4Client.Authorizations
         {
             var userId = context.UserId;
             var tenantId = context.TenantId;
-            if (userId == null || !string.IsNullOrWhiteSpace(context.ScopeId))
+            if (userId == null)
             {
                 return PermissionGrantResult.Undefined;
             }
 
-            return await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, userId, tenantId)
+            return await PermissionStore.IsGrantedAsync(context.Permission.Name, 
+                                                        Name, 
+                                                        userId, 
+                                                        context.ScopeId,
+                                                        tenantId)
                        ? PermissionGrantResult.Granted
                        : PermissionGrantResult.Undefined;
         }
