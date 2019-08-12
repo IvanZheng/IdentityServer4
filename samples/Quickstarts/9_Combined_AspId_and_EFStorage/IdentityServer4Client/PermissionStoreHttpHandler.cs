@@ -13,7 +13,6 @@ namespace IdentityServer4Client
 {
     internal class PermissionStoreHttpHandler : DelegatingHandler
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IdentityServerAuthenticationOptions _options;
         private readonly ILogger _logger;
@@ -21,12 +20,10 @@ namespace IdentityServer4Client
         private DateTime? _expiresAt;
 
         public PermissionStoreHttpHandler(ILogger<PermissionStoreHttpHandler> logger,
-                                          IHostingEnvironment hostingEnvironment,
                                           IOptionsMonitor<IdentityServerAuthenticationOptions> optionsMonitor,
                                           IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
-            _hostingEnvironment = hostingEnvironment;
             _httpClientFactory = httpClientFactory;
             _options = optionsMonitor.Get("Bearer");
         }
@@ -37,6 +34,7 @@ namespace IdentityServer4Client
             if (_tokenResponse == null || _expiresAt < DateTime.Now.AddMinutes(5))
             {
                 var client = _httpClientFactory.CreateClient(nameof(PermissionStoreHttpHandler));
+
 
                 var disco = await client.GetDiscoveryDocumentAsync(_options.Authority);
                 if (disco.IsError)
