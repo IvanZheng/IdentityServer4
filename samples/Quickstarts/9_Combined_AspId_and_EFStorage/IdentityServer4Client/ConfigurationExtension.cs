@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net.Http;
+using IdentityModel.Client;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServer4Client.Authorizations;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +11,26 @@ namespace IdentityServer4Client
 {
     public static class ConfigurationExtension
     {
-        public static IServiceCollection AddIdentityServerClient(this IServiceCollection services)
+        public static IServiceCollection AddHttpServiceClient<TClient, TApiHttpHandler>(this IServiceCollection services,
+                                                                                        Action<IServiceProvider, HttpClient> configureHttpClient,
+                                                                                        RefitSettings refitSettings = null)
+            where TClient : class
+            where TApiHttpHandler : DelegatingHandler
         {
-            services.AddRefitClient<IPermissionStore>()
-                    .ConfigureHttpClient((provider, httpClient) =>
-                    {
-                        var options = provider.GetService<IOptions<IdentityServerAuthenticationOptions>>();
-                        httpClient.BaseAddress = new Uri(options.Value.Authority);
-                    });
+            return services.AddTransient<TApiHttpHandler>()
+                           .AddRefitClient<TClient>(refitSettings)
+                           .AddHttpMessageHandler<TApiHttpHandler>()
+                           .ConfigureHttpClient(configureHttpClient)
+                           .Services;
+        }
 
+        public static IServiceCollection AddIdentityServerLocalApiClient(this IServiceCollection services)
+        {
+            services.AddHttpServiceClient<IPermissionStore, PermissionStoreHttpHandler>((provider, httpClient) =>
+            {
+                var options = provider.GetService<IOptionsMonitor<IdentityServerAuthenticationOptions>>().Get("Bearer");
+                httpClient.BaseAddress = new Uri(options.Authority);
+            });
             return services;
         }
     }

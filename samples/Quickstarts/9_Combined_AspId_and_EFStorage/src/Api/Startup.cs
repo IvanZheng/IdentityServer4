@@ -55,7 +55,8 @@ namespace Api
                                                    ServiceLifetime.Singleton));
             services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
             services.AddSingleton<PermissionDefinitionProvider>();
-            services.AddScoped<IPermissionStore, RemotePermissionStore>();
+            //services.AddScoped<IPermissionStore, RemotePermissionStore>();
+            services.AddIdentityServerLocalApiClient();
             services.AddScoped<IPermissionChecker, PermissionChecker>();
             services.AddScoped<ICurrentPrincipalAccessor, CurrentPrincipalAccessor>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
