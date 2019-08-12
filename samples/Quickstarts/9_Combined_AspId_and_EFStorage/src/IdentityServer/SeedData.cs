@@ -1,14 +1,10 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
+﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
 using IdentityModel;
 using IdentityServer.Managers;
 using IdentityServer.Models;
+using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServerAspNetIdentity.Data;
@@ -31,6 +27,7 @@ namespace IdentityServerAspNetIdentity
                 var tenantMgr = provider.GetRequiredService<TenantManager>();
                 var roleMgr = provider.GetRequiredService<RoleManager>();
                 var userMgr = provider.GetRequiredService<UserManager<ApplicationUser>>();
+                var permissionManager = provider.GetRequiredService<PermissionManager>();
                 //var userRoleStore = provider.GetRequiredService<IUserRoleStore<ApplicationUser>>() as UserRoleStore;
 
                 var tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
@@ -41,6 +38,7 @@ namespace IdentityServerAspNetIdentity
                     {
                         throw new Exception(result.Errors.First().Description);
                     }
+
                     tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
                     Console.WriteLine("tenant1 created");
                 }
@@ -57,6 +55,7 @@ namespace IdentityServerAspNetIdentity
                     {
                         throw new Exception(result.Errors.First().Description);
                     }
+
                     tenant2 = tenantMgr.FindByNameAsync("tenant2").Result;
                     Console.WriteLine("tenant2 created");
                 }
@@ -73,7 +72,8 @@ namespace IdentityServerAspNetIdentity
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
-                    } 
+                    }
+
                     adminRole = roleMgr.FindByNameAsync(adminRoleName).Result;
                 }
 
@@ -85,7 +85,8 @@ namespace IdentityServerAspNetIdentity
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
-                    } 
+                    }
+
                     tenantAdminRole1 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant1.NodeId).Result;
                     Console.WriteLine("tenantAdminRole created");
                 }
@@ -97,7 +98,8 @@ namespace IdentityServerAspNetIdentity
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
-                    } 
+                    }
+
                     tenantAdminRole2 = roleMgr.FindByNameScopeAsync(tenantRoleName, tenant2.NodeId).Result;
                     Console.WriteLine("tenantAdminRole created");
                 }
@@ -105,10 +107,7 @@ namespace IdentityServerAspNetIdentity
                 var alice = userMgr.FindByNameAsync("alice").Result;
                 if (alice == null)
                 {
-                    alice = new ApplicationUser
-                    {
-                        UserName = "alice"
-                    };
+                    alice = new ApplicationUser {UserName = "alice"};
                     var result = userMgr.CreateAsync(alice, "Pass123$").Result;
                     if (!result.Succeeded)
                     {
@@ -116,19 +115,12 @@ namespace IdentityServerAspNetIdentity
                     }
 
                     alice = userMgr.FindByNameAsync("alice").Result;
-                    result = userMgr.AddClaimsAsync(alice, new Claim[]{
-                                new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                                new Claim(JwtClaimTypes.GivenName, "Alice"),
-                                new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                                new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-                                new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                                new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                                new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
-                            }).Result;
+                    result = userMgr.AddClaimsAsync(alice, new[] {new Claim(JwtClaimTypes.Name, "Alice Smith"), new Claim(JwtClaimTypes.GivenName, "Alice"), new Claim(JwtClaimTypes.FamilyName, "Smith"), new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"), new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean), new Claim(JwtClaimTypes.WebSite, "http://alice.com"), new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServerConstants.ClaimValueTypes.Json)}).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
                     }
+
                     Console.WriteLine("alice created");
 
 
@@ -143,6 +135,7 @@ namespace IdentityServerAspNetIdentity
                     {
                         throw new Exception(result.Errors.First().Description);
                     }
+
                     Console.WriteLine("user role created");
                 }
                 else
@@ -150,15 +143,17 @@ namespace IdentityServerAspNetIdentity
                     Console.WriteLine("alice already exists");
                 }
 
-                
+                permissionManager.GrantAsync("Api.ApiManagementPermissions.Post",
+                                             "Role",
+                                             $"{tenantAdminRole1.Name}:{tenant1.NodeId}",
+                                             null)
+                                 .Wait();
+
 
                 var bob = userMgr.FindByNameAsync("bob").Result;
                 if (bob == null)
                 {
-                    bob = new ApplicationUser
-                    {
-                        UserName = "bob"
-                    };
+                    bob = new ApplicationUser {UserName = "bob"};
                     var result = userMgr.CreateAsync(bob, "Pass123$").Result;
                     if (!result.Succeeded)
                     {
@@ -166,16 +161,12 @@ namespace IdentityServerAspNetIdentity
                     }
 
                     bob = userMgr.FindByNameAsync("bob").Result;
-                    result = userMgr.AddClaimsAsync(bob, new Claim[]{
-                                new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                                new Claim(JwtClaimTypes.GivenName, "Bob"),
-                                new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                                new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                            }).Result;
+                    result = userMgr.AddClaimsAsync(bob, new[] {new Claim(JwtClaimTypes.Name, "Bob Smith"), new Claim(JwtClaimTypes.GivenName, "Bob"), new Claim(JwtClaimTypes.FamilyName, "Smith"), new Claim(JwtClaimTypes.Email, "BobSmith@email.com")}).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
                     }
+
                     Console.WriteLine("bob created");
                     result = roleMgr.AddToRoleAsync(bob, tenantAdminRole2).Result;
                     if (!result.Succeeded)
@@ -197,6 +188,7 @@ namespace IdentityServerAspNetIdentity
                     {
                         context.Clients.Add(client.ToEntity());
                     }
+
                     context.SaveChanges();
                 }
 
@@ -206,15 +198,17 @@ namespace IdentityServerAspNetIdentity
                     {
                         context.IdentityResources.Add(resource.ToEntity());
                     }
+
                     context.SaveChanges();
                 }
-                
+
                 if (!context.ApiResources.Any())
                 {
                     foreach (var resource in Config.GetApis())
                     {
                         context.ApiResources.Add(resource.ToEntity());
                     }
+
                     context.SaveChanges();
                 }
             }

@@ -4,7 +4,7 @@ namespace IdentityServer4Client.Authorizations
 {
     public class RemotePermissionStore:IPermissionStore
     {
-        public Task<bool> IsGrantedAsync(string name, string providerType, string providerKey)
+        public Task<bool> IsGrantedAsync(string name, string providerType, string providerKey, string tenantId)
         {
             return Task.FromResult(true);
         }

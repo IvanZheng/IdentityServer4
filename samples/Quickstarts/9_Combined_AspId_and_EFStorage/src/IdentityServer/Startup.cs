@@ -39,7 +39,8 @@ namespace IdentityServerAspNetIdentity
             services.AddDbContextPool<ApplicationDbContext>(options =>
                                                             options.UseSqlServer(connectionString));
 
-            services.AddScoped<TenantManager>();
+            services.AddScoped<TenantManager>()
+                    .AddScoped<PermissionManager>();
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddRoleManager<RoleManager>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -48,7 +49,7 @@ namespace IdentityServerAspNetIdentity
             services.Replace(new ServiceDescriptor(typeof(IRoleValidator<ApplicationRole>), typeof(RoleValidator), ServiceLifetime.Scoped));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            services.AddLocalApiAuthentication();
             //services.Configure<IISOptions>(iis =>
             //{
             //    iis.AuthenticationDisplayName = "Windows";

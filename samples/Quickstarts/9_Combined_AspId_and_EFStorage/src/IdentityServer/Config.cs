@@ -22,6 +22,7 @@ namespace IdentityServerAspNetIdentity
         {
             return new List<ApiResource>
             {
+                new ApiResource(IdentityServerConstants.LocalApi.ScopeName),
                 new ApiResource("api1", "My API", new List<string>{JwtClaimTypes.Role})
                 {
                     ApiSecrets = new List<Secret> 
@@ -61,7 +62,8 @@ namespace IdentityServerAspNetIdentity
                         "api1", 
                         "api2",
                         "apiall",
-                        JwtClaimTypes.Role
+                        JwtClaimTypes.Role,
+                        IdentityServerConstants.LocalApi.ScopeName
                     }
                 },
                 // resource owner password grant client

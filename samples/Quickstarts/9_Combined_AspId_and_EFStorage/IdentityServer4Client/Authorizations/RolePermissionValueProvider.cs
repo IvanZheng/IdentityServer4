@@ -35,7 +35,7 @@ namespace IdentityServer4Client.Authorizations
 
             foreach (var roleKey in roles.Select(r => r.Key))
             {
-                if (await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, roleKey))
+                if (await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, roleKey, context.TenantId))
                 {
                     return PermissionGrantResult.Granted;
                 }

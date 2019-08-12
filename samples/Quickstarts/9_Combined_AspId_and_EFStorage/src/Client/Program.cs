@@ -29,7 +29,7 @@ namespace Client
                 Address = disco.TokenEndpoint,
                 ClientId = "client",
                 ClientSecret = "secret2",
-                Scope = "apiall"
+                Scope = "apiall IdentityServerApi"
             });
             
             if (tokenResponse.IsError)
@@ -44,6 +44,18 @@ namespace Client
             // call api
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+            //Api.ApiManagementPermissions.Post zero.tenantRole1:f4898a97-8f4e-4f52-9102-6fdd0639dcf9
+            var permissionResult = await apiClient.GetAsync("http://localhost:5000/permissions?name=Api.ApiManagementPermissions.Post&providerType=Role&providerKey=zero.tenantRole1:f4898a97-8f4e-4f52-9102-6fdd0639dcf9");
+            if (!permissionResult.IsSuccessStatusCode)
+            {
+                Console.WriteLine(permissionResult.StatusCode);
+            }
+            else
+            {
+                var content = await permissionResult.Content.ReadAsStringAsync();
+                Console.WriteLine(content);
+            }
 
             var response = await apiClient.GetAsync("http://localhost:5001/identity?scopeId=bbb");
             if (!response.IsSuccessStatusCode)

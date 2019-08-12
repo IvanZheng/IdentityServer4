@@ -17,14 +17,14 @@ namespace IdentityServer4Client.Authorizations
 
         public override async Task<PermissionGrantResult> CheckAsync(PermissionValueCheckContext context)
         {
-            var userId = context.Principal?.FindFirst(JwtClaimTypes.Subject)?.Value;
-
+            var userId = context.UserId;
+            var tenantId = context.TenantId;
             if (userId == null || !string.IsNullOrWhiteSpace(context.ScopeId))
             {
                 return PermissionGrantResult.Undefined;
             }
 
-            return await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, userId)
+            return await PermissionStore.IsGrantedAsync(context.Permission.Name, Name, userId, tenantId)
                        ? PermissionGrantResult.Granted
                        : PermissionGrantResult.Undefined;
         }
