@@ -18,6 +18,7 @@ namespace IdentityServer4Client
         private readonly ILogger _logger;
         private TokenResponse _tokenResponse;
         private DateTime? _expiresAt;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         public PermissionStoreHttpHandler(ILogger<PermissionStoreHttpHandler> logger,
                                           IOptionsMonitor<IdentityServerAuthenticationOptions> optionsMonitor,
@@ -29,6 +30,18 @@ namespace IdentityServer4Client
         }
 
 
+        private async Task<TResult> LockAsync<TResult>(Func<Task<TResult>> worker)
+        {
+            await _semaphore.WaitAsync();
+            try
+            {
+                return await worker();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
         protected virtual async Task<string> GetAccessTokenAsync()
         {
             if (_tokenResponse == null || _expiresAt < DateTime.Now.AddMinutes(5))
@@ -42,7 +55,13 @@ namespace IdentityServer4Client
                     throw new Exception(disco.Error);
                 }
                 // request token
-                _tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest {Address = disco.TokenEndpoint, ClientId = "client", ClientSecret = "secret2", Scope = "apiall IdentityServerApi"});
+                _tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = disco.TokenEndpoint, 
+                    ClientId = "client", 
+                    ClientSecret = "secret2",
+                    Scope = "apiall IdentityServerApi"
+                });
                 if (_tokenResponse.IsError)
                 {
                     throw new Exception(_tokenResponse.Error);
@@ -59,7 +78,7 @@ namespace IdentityServer4Client
             HttpResponseMessage response = null;
             try
             {
-                request.SetBearerToken(await GetAccessTokenAsync());
+                request.SetBearerToken(await LockAsync(GetAccessTokenAsync));
                 response = await base.SendAsync(request, cancellationToken);
                 await LogInfo(startDate, request, response).ConfigureAwait(false);
                 return response;
