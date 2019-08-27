@@ -13,6 +13,8 @@ namespace IdentityServerAspNetIdentity.Data
         public DbSet<ApplicationTenant> Tenants { get; set; }
         public DbSet<ApplicationNode> Nodes { get; set; }
         public DbSet<ApplicationPermissionGrant> PermissionGrants { get; set; }
+        public DbSet<ApplicationMember> Members { get; set; }
+        public DbSet<ApplicationNodeMember> NodeMembers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -33,6 +35,13 @@ namespace IdentityServerAspNetIdentity.Data
             builder.Entity<ApplicationPermissionGrant>()
                    .HasIndex(g => new {g.Name, g.ProviderType, g.ProviderKey, g.ScopeId, g.TenantId})
                    .HasName("IX_ApplicationPermissionGrant_Name_ProviderType_ProviderKey");
+
+            builder.Entity<ApplicationMember>()
+                   .HasIndex(m => new {m.UserId, m.TenantId})
+                   .IsUnique();
+
+            builder.Entity<ApplicationNodeMember>()
+                   .HasKey(e => new {e.MemberId, e.NodeId});
         }
     }
 }
