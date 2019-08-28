@@ -3,10 +3,10 @@ using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
-using IdentityServer.Managers;
-using IdentityServer.Models;
-using IdentityServerAspNetIdentity.Data;
-using IdentityServerAspNetIdentity.Models;
+using IdentityServer.Core;
+using IdentityServer.Core.Data;
+using IdentityServer.Core.Managers;
+using IdentityServer.Core.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 
 namespace IdentityServerAspNetIdentity
@@ -32,9 +33,11 @@ namespace IdentityServerAspNetIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var adminConfiguration = Configuration.GetSection(nameof(AdminConfiguration)).Get<AdminConfiguration>();
+            services.AddSingleton(adminConfiguration);
             IdentityModelEventSource.ShowPII = true;
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddDbContextPool<ApplicationDbContext>(options =>
                                                             options.UseSqlServer(connectionString));

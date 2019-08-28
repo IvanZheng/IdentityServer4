@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer.Managers;
+﻿using System.Threading.Tasks;
+using IdentityServer.Core;
+using IdentityServer.Core.Managers;
 using IdentityServer4;
-using IdentityServer4.Quickstart.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityServer.Quickstart.Permission
+namespace IdentityServer.Api.Controllers
 {
     [ApiController]
-    [SecurityHeaders]
-    [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+    [Authorize(AuthorizationConsts.AdministrationPolicy)]
     [Route("permissions")]
     public class PermissionController: Controller
     {

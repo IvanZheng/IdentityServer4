@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Security.Claims;
 using IdentityModel;
-using IdentityServer.Managers;
-using IdentityServer.Models;
+using IdentityServer.Core;
+using IdentityServer.Core.Data;
+using IdentityServer.Core.Managers;
+using IdentityServer.Core.Models;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServerAspNetIdentity.Data;
-using IdentityServerAspNetIdentity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +22,7 @@ namespace IdentityServerAspNetIdentity
             provider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
             provider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
             provider.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
-
+            var adminConfiguration = provider.GetRequiredService<AdminConfiguration>();
             {
                 var tenantMgr = provider.GetRequiredService<TenantManager>();
                 var roleMgr = provider.GetRequiredService<RoleManager>();
@@ -115,7 +115,17 @@ namespace IdentityServerAspNetIdentity
                     }
 
                     alice = userMgr.FindByNameAsync("alice").Result;
-                    result = userMgr.AddClaimsAsync(alice, new[] {new Claim(JwtClaimTypes.Name, "Alice Smith"), new Claim(JwtClaimTypes.GivenName, "Alice"), new Claim(JwtClaimTypes.FamilyName, "Smith"), new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"), new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean), new Claim(JwtClaimTypes.WebSite, "http://alice.com"), new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServerConstants.ClaimValueTypes.Json)}).Result;
+                    result = userMgr.AddClaimsAsync(alice,
+                                                    new[]
+                                                    {
+                                                        new Claim(JwtClaimTypes.Name, "Alice Smith"), 
+                                                        new Claim(JwtClaimTypes.GivenName, "Alice"), 
+                                                        new Claim(JwtClaimTypes.FamilyName, "Smith"), 
+                                                        new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
+                                                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+                                                        new Claim(JwtClaimTypes.WebSite, "http://alice.com"), 
+                                                        new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServerConstants.ClaimValueTypes.Json)
+                                                    }).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);
@@ -185,7 +195,7 @@ namespace IdentityServerAspNetIdentity
                 var context = provider.GetRequiredService<ConfigurationDbContext>();
                 if (!context.Clients.Any())
                 {
-                    foreach (var client in Config.GetClients())
+                    foreach (var client in Config.GetClients(adminConfiguration))
                     {
                         context.Clients.Add(client.ToEntity());
                     }
@@ -205,7 +215,7 @@ namespace IdentityServerAspNetIdentity
 
                 if (!context.ApiResources.Any())
                 {
-                    foreach (var resource in Config.GetApis())
+                    foreach (var resource in Config.GetApis(adminConfiguration))
                     {
                         context.ApiResources.Add(resource.ToEntity());
                     }
