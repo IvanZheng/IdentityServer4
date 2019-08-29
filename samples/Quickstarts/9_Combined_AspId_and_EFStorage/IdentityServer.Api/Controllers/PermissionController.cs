@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer.Api.Controllers
 {
     [ApiController]
-    [Authorize(AuthorizationConsts.AdministrationPolicy)]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = AuthorizationConsts.AdministrationPolicy)]
     [Route("permissions")]
     public class PermissionController: Controller
     {

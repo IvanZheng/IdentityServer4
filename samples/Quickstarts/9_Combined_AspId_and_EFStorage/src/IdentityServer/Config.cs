@@ -106,14 +106,11 @@ namespace IdentityServerAspNetIdentity
             return new List<ApiResource>
             {
                 new ApiResource(IdentityServerConstants.LocalApi.ScopeName),
-                new ApiResource(adminConfiguration.IdentityAdminApiScope)
+                new ApiResource(adminConfiguration.IdentityAdminApiScope, new List<string>{JwtClaimTypes.Role})
                 {
                     Scopes = new List<Scope>()
                     {
-                        new Scope(adminConfiguration.IdentityAdminApiScope),
-                        new Scope("api1"),
-                        new Scope("api2"), 
-                        new Scope("apiall")
+                        new Scope(adminConfiguration.IdentityAdminApiScope)
                     }
                 },
                 new ApiResource("api1", "My API", new List<string>{JwtClaimTypes.Role})
@@ -220,6 +217,7 @@ namespace IdentityServerAspNetIdentity
                     },
                     AllowedScopes =
                     {
+                        JwtClaimTypes.Role,
                         adminConfiguration.IdentityAdminApiScope
                     },
                     AllowAccessTokensViaBrowser = true

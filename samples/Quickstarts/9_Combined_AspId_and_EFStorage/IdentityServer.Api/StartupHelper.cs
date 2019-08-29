@@ -30,10 +30,11 @@ namespace IdentityServer.Api
             where TUser : class
         {
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                    .AddIdentityServerAuthentication(options =>
                     {
                         options.Authority = adminApiConfiguration.IdentityServerBaseUrl;
                         options.ApiName = adminApiConfiguration.OidcApiName;
+
 #if DEBUG
                         options.RequireHttpsMetadata = false;
 #else
@@ -50,7 +51,7 @@ namespace IdentityServer.Api
                     .AddDefaultTokenProviders();
         }
 
-        public static void AddAuthorizationPolicies(this IServiceCollection services)
+        public static IMvcCoreBuilder AddAuthorizationPolicies(this IMvcCoreBuilder services)
         {
             services.AddAuthorization(options =>
             {
@@ -58,8 +59,10 @@ namespace IdentityServer.Api
                                   policy =>
                                   {
                                       policy.RequireScope(AuthenticationConsts.IdentityApiScope);
+                                      //policy.RequireRole(AuthorizationConsts.AdministrationRole);
                                   });
             });
+            return services;
         }
     }
 }

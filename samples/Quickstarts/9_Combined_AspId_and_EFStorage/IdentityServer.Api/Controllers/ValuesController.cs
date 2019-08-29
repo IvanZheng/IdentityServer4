@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer.Api.Controllers
 {
     [Route("[controller]")] 
-    [Authorize(AuthorizationConsts.AdministrationPolicy)]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = AuthorizationConsts.AdministrationPolicy)]
     [Produces("application/json")]
     [ApiController]
     public class ValuesController : ControllerBase

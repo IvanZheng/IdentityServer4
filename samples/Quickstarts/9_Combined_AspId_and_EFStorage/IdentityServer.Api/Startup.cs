@@ -43,6 +43,7 @@ namespace IdentityServer.Api
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
             services.AddMvcCore()
+                    .AddAuthorizationPolicies()
                     .AddApiExplorer()
                     .AddJsonFormatters();
             services.AddDbContextPool<ApplicationDbContext>(options =>
@@ -62,7 +63,7 @@ namespace IdentityServer.Api
                     b.UseSqlServer(connectionString,
                                    sql => sql.MigrationsAssembly(migrationsAssembly));
             });
-         
+
             services.AddApiAuthentication<ApplicationDbContext, ApplicationUser, ApplicationRole>(adminApiConfiguration);
            
 
