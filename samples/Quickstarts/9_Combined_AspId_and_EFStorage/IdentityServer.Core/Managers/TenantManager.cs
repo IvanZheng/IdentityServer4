@@ -20,12 +20,12 @@ namespace IdentityServer.Core.Managers
         {
         }
 
-        public async Task<IdentityResult> CreateAsync(string name)
+        public async Task<IdentityResult> CreateAsync(string name, string nodeId = null)
         {
             var tenant = new ApplicationTenant(name); 
             _dbContext.Tenants.Add(tenant);
             
-            var tenantNode = new ApplicationNode(name, tenant.Id);
+            var tenantNode = new ApplicationNode(name, tenant.Id, nodeId:nodeId);
             _dbContext.Nodes.Add(tenantNode);
 
             tenant.NodeId = tenantNode.Id;

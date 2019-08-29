@@ -7,9 +7,9 @@ namespace IdentityServer.Core.Models
     {
         public ApplicationNode() { }
 
-        public ApplicationNode(string name, string tenantId, string type = null, string parentId = null)
+        public ApplicationNode(string name, string tenantId, string type = null, string parentId = null, string nodeId = null)
         {
-            Id = Guid.NewGuid().ToString();
+            Id = nodeId ?? Guid.NewGuid().ToString();
             Name = name;
             ParentId = parentId;
             TenantId = tenantId;

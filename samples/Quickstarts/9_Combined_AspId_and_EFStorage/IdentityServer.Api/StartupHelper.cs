@@ -59,7 +59,7 @@ namespace IdentityServer.Api
                                   policy =>
                                   {
                                       policy.RequireScope(AuthenticationConsts.IdentityApiScope);
-                                      //policy.RequireRole(AuthorizationConsts.AdministrationRole);
+                                      policy.RequireRole(AuthorizationConsts.AdministrationRole);
                                   });
             });
             return services;

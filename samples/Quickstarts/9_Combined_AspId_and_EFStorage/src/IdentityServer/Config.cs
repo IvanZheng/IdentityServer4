@@ -157,6 +157,11 @@ namespace IdentityServerAspNetIdentity
                         JwtClaimTypes.Role,
                         IdentityServerConstants.LocalApi.ScopeName,
                         adminConfiguration.IdentityAdminApiScope
+                    },
+                    ClientClaimsPrefix = string.Empty,
+                    Claims = new List<Claim>
+                    {
+                        new Claim(JwtClaimTypes.Role, "zero.Admin")
                     }
                 },
                 // resource owner password grant client

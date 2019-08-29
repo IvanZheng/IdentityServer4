@@ -33,7 +33,7 @@ namespace IdentityServerAspNetIdentity
                 var tenant1 = tenantMgr.FindByNameAsync("tenant1").Result;
                 if (tenant1 == null)
                 {
-                    var result = tenantMgr.CreateAsync("tenant1").Result;
+                    var result = tenantMgr.CreateAsync("tenant1", "3d0a1642-c2e1-4031-96a9-4fc651c245c1").Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception(result.Errors.First().Description);

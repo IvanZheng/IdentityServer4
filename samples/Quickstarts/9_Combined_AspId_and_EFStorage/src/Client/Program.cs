@@ -46,7 +46,7 @@ namespace Client
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
             //Api.ApiManagementPermissions.Post zero.tenantRole1:f4898a97-8f4e-4f52-9102-6fdd0639dcf9
-            var permissionResult = await apiClient.GetAsync("http://localhost:9001/permissions?name=Api.ApiManagementPermissions.Post&providerType=Role&providerKey=zero.tenantRole1&scopeId=4dde5ffd-ff34-481c-ac78-944451a406d3");
+            var permissionResult = await apiClient.GetAsync("http://localhost:9001/permissions?name=Api.ApiManagementPermissions.Post&providerType=Role&providerKey=zero.tenantRole1&scopeId=3d0a1642-c2e1-4031-96a9-4fc651c245c1");
             if (!permissionResult.IsSuccessStatusCode)
             {
                 Console.WriteLine(permissionResult.StatusCode);
@@ -68,7 +68,7 @@ namespace Client
                 Console.WriteLine(content);
             }
 
-            response = await apiClient.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "aaa", Name = "test"});
+            response = await apiClient.PostAsJsonAsync("http://localhost:5001/identity", new {ScopeId = "3d0a1642-c2e1-4031-96a9-4fc651c245c1", Name = "test"});
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.StatusCode);
