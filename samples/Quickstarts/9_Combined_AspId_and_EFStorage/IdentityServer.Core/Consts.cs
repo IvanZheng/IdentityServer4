@@ -13,8 +13,8 @@ namespace IdentityServer.Core
         public const string OidcResponseType = "code id_token";
         public static List<string> Scopes = new List<string> { ScopeOpenId, ScopeProfile, ScopeEmail, ScopeRoles };
 
-        public const string IdentityAdminApiSwaggerClientId = "zero_identity_api_swaggerui";
-        public const string IdentityAdminApiScope = "zero_identity_api";
+        public const string IdentityApiSwaggerClientId = "zero_identity_api_swaggerui";
+        public const string IdentityApiScope = "zero_identity_api";
 
         public const string ScopeOpenId = "openid";
         public const string ScopeProfile = "profile";

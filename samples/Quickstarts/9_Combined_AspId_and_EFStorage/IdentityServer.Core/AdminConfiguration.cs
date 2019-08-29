@@ -13,9 +13,9 @@ namespace IdentityServer.Core
         public string ClientId { get; set; } = AuthenticationConsts.OidcClientId;
         public string[] Scopes { get; set; }
 
-        public string IdentityAdminApiSwaggerUIClientId { get; } = AuthenticationConsts.IdentityAdminApiSwaggerClientId;
+        public string IdentityAdminApiSwaggerUIClientId { get; } = AuthenticationConsts.IdentityApiSwaggerClientId;
         public string IdentityAdminApiSwaggerUIRedirectUrl { get; } = "http://localhost:9001/swagger/oauth2-redirect.html";
-        public string IdentityAdminApiScope { get; } = AuthenticationConsts.IdentityAdminApiScope;
+        public string IdentityAdminApiScope { get; } = AuthenticationConsts.IdentityApiScope;
 
         public string ClientSecret { get; set; } = AuthenticationConsts.OidcClientSecret;
         public string OidcResponseType { get; set; } = AuthenticationConsts.OidcResponseType;

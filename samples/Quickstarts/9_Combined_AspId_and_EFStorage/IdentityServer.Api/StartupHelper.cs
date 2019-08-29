@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IdentityServer.Core;
 using IdentityServer.Core.Managers;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,7 @@ namespace IdentityServer.Api
             where TUser : class
         {
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
+                    .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
                     {
                         options.Authority = adminApiConfiguration.IdentityServerBaseUrl;
                         options.ApiName = adminApiConfiguration.OidcApiName;
@@ -56,7 +57,7 @@ namespace IdentityServer.Api
                 options.AddPolicy(AuthorizationConsts.AdministrationPolicy,
                                   policy =>
                                   {
-                                      policy.RequireRole(AuthorizationConsts.AdministrationRole);
+                                      policy.RequireScope(AuthenticationConsts.IdentityApiScope);
                                   });
             });
         }

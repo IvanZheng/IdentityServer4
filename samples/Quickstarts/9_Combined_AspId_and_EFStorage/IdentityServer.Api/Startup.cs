@@ -42,7 +42,9 @@ namespace IdentityServer.Api
             IdentityModelEventSource.ShowPII = true;
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
-
+            services.AddMvcCore()
+                    .AddApiExplorer()
+                    .AddJsonFormatters();
             services.AddDbContextPool<ApplicationDbContext>(options =>
                                                                 options.UseSqlServer(connectionString));
 
@@ -62,14 +64,14 @@ namespace IdentityServer.Api
             });
          
             services.AddApiAuthentication<ApplicationDbContext, ApplicationUser, ApplicationRole>(adminApiConfiguration);
-            services.AddAuthorizationPolicies();
+           
 
             services.AddScoped<TenantManager>()
                     .AddScoped<PermissionManager>();
           
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory>();
             services.Replace(new ServiceDescriptor(typeof(IRoleValidator<ApplicationRole>), typeof(RoleValidator), ServiceLifetime.Scoped));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
 
             services.AddSwaggerGen(options =>
             {
@@ -90,6 +92,16 @@ namespace IdentityServer.Api
 
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5003")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,9 +118,7 @@ namespace IdentityServer.Api
                 app.UseHttpsRedirection();
             }
 
-
-
-            app.UseAuthentication();
+            app.UseCors("default");
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -118,7 +128,8 @@ namespace IdentityServer.Api
                 c.OAuthClientId(adminApiConfiguration.OidcSwaggerUIClientId);
                 c.OAuthAppName(ApiConfigurationConsts.ApiName);
             });
-
+            app.UseAuthentication();
+          
             app.UseMvc();
         }
     }

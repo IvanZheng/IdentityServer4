@@ -43,7 +43,7 @@ namespace MvcClient.Controllers
             //var content = await client.GetStringAsync("http://localhost:5001/identity?scopeId=aaa");
 
             var response = await client.PostAsJsonAsync("http://localhost:5001/identity", 
-                                                        new {ScopeId = "4dde5ffd-ff34-481c-ac78-944451a406d3", Name = "test"})
+                                                        new {ScopeId = "a7f4c9c1-36c0-4ec5-9434-a67574f30e32", Name = "test"})
                                       .ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {

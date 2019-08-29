@@ -105,20 +105,15 @@ namespace IdentityServerAspNetIdentity
         {
             return new List<ApiResource>
             {
-                new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
+                new ApiResource(IdentityServerConstants.LocalApi.ScopeName),
+                new ApiResource(adminConfiguration.IdentityAdminApiScope)
                 {
                     Scopes = new List<Scope>()
                     {
-                        new Scope
-                        {
-                            Name = adminConfiguration.IdentityAdminApiScope,
-                            DisplayName = adminConfiguration.IdentityAdminApiScope,
-                            UserClaims = new List<string>
-                            {
-                                JwtClaimTypes.Role
-                            },
-                            Required = true
-                        }
+                        new Scope(adminConfiguration.IdentityAdminApiScope),
+                        new Scope("api1"),
+                        new Scope("api2"), 
+                        new Scope("apiall")
                     }
                 },
                 new ApiResource("api1", "My API", new List<string>{JwtClaimTypes.Role})
@@ -163,7 +158,8 @@ namespace IdentityServerAspNetIdentity
                         "api2",
                         "apiall",
                         JwtClaimTypes.Role,
-                        IdentityServerConstants.LocalApi.ScopeName
+                        IdentityServerConstants.LocalApi.ScopeName,
+                        adminConfiguration.IdentityAdminApiScope
                     }
                 },
                 // resource owner password grant client
@@ -172,7 +168,7 @@ namespace IdentityServerAspNetIdentity
                     ClientId = "ro.client", 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = {new Secret("secret".Sha256())},
-                    AllowedScopes = {"api1"}
+                    AllowedScopes = {"api1", adminConfiguration.IdentityAdminApiScope}
                 },
                 // OpenID Connect hybrid flow client (MVC)
                 new Client
@@ -188,7 +184,8 @@ namespace IdentityServerAspNetIdentity
                         IdentityServerConstants.StandardScopes.Profile,
                         JwtClaimTypes.Role,
                         "api1",
-                        "api2"
+                        "api2",
+                        adminConfiguration.IdentityAdminApiScope
                     },
                     AllowOfflineAccess = true
                 },
@@ -203,7 +200,12 @@ namespace IdentityServerAspNetIdentity
                     RedirectUris = {"http://localhost:5003/callback.html"},
                     PostLogoutRedirectUris = {"http://localhost:5003/index.html"},
                     AllowedCorsOrigins = {"http://localhost:5003"},
-                    AllowedScopes = {IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile, "api1"}
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId, 
+                        IdentityServerConstants.StandardScopes.Profile, 
+                        "api1",
+                        adminConfiguration.IdentityAdminApiScope
+                    }
                 },
                 new Client
                 {

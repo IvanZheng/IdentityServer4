@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.Core;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]")] 
     [Authorize(AuthorizationConsts.AdministrationPolicy)]
+    [Produces("application/json")]
     [ApiController]
     public class ValuesController : ControllerBase
     {

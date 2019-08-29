@@ -46,9 +46,7 @@ namespace IdentityServer4Client
         {
             if (_tokenResponse == null || _expiresAt < DateTime.Now.AddMinutes(5))
             {
-                var client = _httpClientFactory.CreateClient(nameof(PermissionStoreHttpHandler));
-
-
+                var client = _httpClientFactory.CreateClient(Consts.IdentityServerAuthenticationHttpClient);
                 var disco = await client.GetDiscoveryDocumentAsync(_options.Authority);
                 if (disco.IsError)
                 {
@@ -60,7 +58,7 @@ namespace IdentityServer4Client
                     Address = disco.TokenEndpoint, 
                     ClientId = "client", 
                     ClientSecret = "secret2",
-                    Scope = "apiall IdentityServerApi"
+                    Scope = "zero_identity_api"
                 });
                 if (_tokenResponse.IsError)
                 {

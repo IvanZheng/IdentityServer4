@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.Authorizations;
 using Api.Security;
+using IdentityServer4.AccessTokenValidation;
 using IdentityServer4Client.Authorizations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace Api.Controllers
             _authorizationService = authorizationService;
         }
 
-        [Authorize("policy1")]
+        [Authorize(Policy = "policy1")]
         [HttpGet]
         public IActionResult Get(string scopeId)
         {
