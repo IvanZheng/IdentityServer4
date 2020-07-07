@@ -9,6 +9,7 @@ using IdentityServer.Core.Managers;
 using IdentityServer.Core.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +105,15 @@ namespace IdentityServerAspNetIdentity
                         // set the redirect URI to http://localhost:5000/signin-google
                         options.ClientId = "copy client ID from Google here";
                         options.ClientSecret = "copy client secret from Google here";
+                    })
+                    .AddCAS(options =>
+                    {
+                        var authority = "http://47.100.173.115:9090/cas/oauth2";
+                        options.ClientId = "fap";
+                        options.ClientSecret = "fap";
+                        options.AuthorizationEndpoint = $"{authority}/authorize";
+                        options.TokenEndpoint = $"{authority}/accessToken";
+                        options.UserInformationEndpoint = "http://47.100.173.115:10000/oauth2/v1/openapi/userInfo";
                     });
         }
 

@@ -46,5 +46,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\IdentityServer.Core\IdentityServer.Core.csproj" />
+    <ProjectReference Include="..\..\Microsoft.AspnetCore.Authentication.CAS\Microsoft.AspNetCore.Authentication.CAS.csproj" />
   </ItemGroup>
 </Project>

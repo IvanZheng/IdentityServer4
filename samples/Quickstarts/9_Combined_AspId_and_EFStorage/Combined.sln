@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29201.188
-MinimumVisualStudioVersion = 15.0.26124.0
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD8BA25C-A91D-419D-99B6-B575ADD6D061}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{08C496D7-9A83-4B2B-A7E4-74A283034313}"
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Api", "IdentityServer.Api\IdentityServer.Api.csproj", "{EA3043C1-C144-4FB0-B739-756300CDDE2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Core", "IdentityServer.Core\IdentityServer.Core.csproj", "{C71D4417-355F-47A0-8D0D-F8A41C1E2BEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.Authentication.CAS", "Microsoft.AspnetCore.Authentication.CAS\Microsoft.AspNetCore.Authentication.CAS.csproj", "{53D0D0FF-3488-47B9-8A16-B902BE475E30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +143,18 @@ Global
 		{C71D4417-355F-47A0-8D0D-F8A41C1E2BEA}.Release|x64.Build.0 = Release|Any CPU
 		{C71D4417-355F-47A0-8D0D-F8A41C1E2BEA}.Release|x86.ActiveCfg = Release|Any CPU
 		{C71D4417-355F-47A0-8D0D-F8A41C1E2BEA}.Release|x86.Build.0 = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|x64.Build.0 = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Debug|x86.Build.0 = Debug|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|x64.ActiveCfg = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|x64.Build.0 = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|x86.ActiveCfg = Release|Any CPU
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +169,7 @@ Global
 		{F2B7961C-9A5C-41D3-AE8F-E8358B879C72} = {BD8BA25C-A91D-419D-99B6-B575ADD6D061}
 		{EA3043C1-C144-4FB0-B739-756300CDDE2C} = {BD8BA25C-A91D-419D-99B6-B575ADD6D061}
 		{C71D4417-355F-47A0-8D0D-F8A41C1E2BEA} = {BD8BA25C-A91D-419D-99B6-B575ADD6D061}
+		{53D0D0FF-3488-47B9-8A16-B902BE475E30} = {BD8BA25C-A91D-419D-99B6-B575ADD6D061}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84D5AF06-1243-46F1-9D58-70ED572832C3}
